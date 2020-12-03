@@ -22,37 +22,6 @@ def creation_nombre_taille(n):
 
 
 def premier(n):
-	"""while 1: #Cette histoire de boucle pose problème
-		tab=[]
-		commande="openssl prime "
-		r=subprocess.run(commande+str(n),shell=True,stdout=subprocess.PIPE)
-		print(r.stdout)
-		resultat_openssl = r.stdout.decode('utf-8') #Le 'utf-8' ne sert pas ici (je crois)
-		#print(resultat_openssl,end='')
-		prime=re.compile(r"(not)") #Parfois l'expression régulière ne fonctionne pas. A arranger
-		resultat=prime.search(resultat_openssl)
-		
-		if resultat: #On change n, tout en utilisant au maximul le n de l'étape précédente
-			for caractere in str(n):
-				tab.append(caractere)
-			n=""
-			if (tab[1]=='0'): #Si à l'étape précédente on avait n=50421 par exemple, alors le prochain nombre sera 042XX, c'est à dire 42XX et ainsi on n'aura un nombre de la taille souhaitée - 1
-				tab[1]=random.choice('123456789') #Cette commande évite ce problème
-			for i in range(0,len(tab)-2):
-				tab[i]=tab[i+1]
-				n+=tab[i]
-			tab[-2]=random.choice('0123456789') #Il y a peut-être une meilleure façon de demander les entiers entre 0 et 9
-			n+=tab[-2]
-			tab[-1]=random.choice('1379') #on ne choisit que des nombres impairs. Les nombres pairs ne pouvant pas être premier
-			n+=tab[-1]
-			premier(int(n))
-
-		else:
-			return n
-			sys.exit(1)"""
-
-#Le grand commentaire précédent est à supprimer. Je l'ai juste laissé pour que tu vois ce qui m'ai passé par la tête et pourquoi je n'y arrivais pas
-	
 	commande = "openssl prime "
 	r = subprocess.run(commande+str(n),shell=True,stdout=subprocess.PIPE)
 	#resultat_openssl = r.stdout.decode('utf-8') #superflu. A la 2ieme ligne suivante il suffit d'écrire str()
@@ -107,7 +76,6 @@ def chiffrementRSA(m,e,n): #Fonction inutile
 def dechiffrementRSA(c,e,n): #Fonction inutile
 	m = powmod(c,e,n)
 	return m
-
 
 
 n = int(input("Indiquer la taille du nombre n souhaité. \n")) #Bros n'aime pas les input
