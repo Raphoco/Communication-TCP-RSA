@@ -7,6 +7,21 @@ import sys
 
 ##### EBAUCHE #####
 
+
+def decoupage(message, l):
+	#fonctions pour découper un message en morceaux de longueur l
+	#problème si len(message) n'est pas multiple de l
+	n = len(message)
+	if n%l !=0:
+		message = message + (l - n % l) * "X" #padding avec des X
+		n = n + l - n % l
+	Liste_message = []
+	q = n//l
+	for i in range(q):
+		Liste_message.append(message[i*l : l+i*l])
+	return Liste_message
+
+
 def creation_nombre_taille(n):
 	tab_entier = []
 	random.seed()
@@ -77,10 +92,16 @@ def dechiffrementRSA(c,e,n): #Fonction inutile
 	m = powmod(c,e,n)
 	return m
 
+def splitBySize(str, size): 
+	lst = []
+	for i in range(0, len(str), size):
+		lst.append(str[i : i + size])
+	return lst
 
-n = int(input("Indiquer la taille du nombre n souhaité. \n")) #Bros n'aime pas les input
-n1 = creation_nombre_taille(n)
-premier(n1)
+#n = int(input("Indiquer la taille du nombre n souhaité. \n")) #Bros n'aime pas les input
+#n1 = creation_nombre_taille(n)
+#premier(n1)
+
 
 
 """Peut-être faire un fichier avec des fonctions pour générer les nombres qu'on veut 
