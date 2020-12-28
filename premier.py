@@ -3,6 +3,8 @@
 import random
 import subprocess
 import re
+import sys
+e=65537
 
 
 def creation_nombre_taille(n):
@@ -20,6 +22,7 @@ def creation_nombre_taille(n):
 
 
 def premier(n):
+	a=[n]
 	commande = "openssl prime "
 	r = subprocess.run(commande+str(n),shell=True,stdout=subprocess.PIPE)
 	#resultat_openssl = r.stdout.decode('utf-8') #superflu. A la 2ieme ligne suivante il suffit d'écrire str()
@@ -40,7 +43,11 @@ def premier(n):
 		n += tab[-1]
 		premier(int(n)) #Récursivité. Evite une boucle
 	else:
-		return n
+		temp=re.compile(r"\d+")
+		a=temp.findall(str(r.stdout))
+		print(int(a[-1]))
+		print(n)
+		return n #return a[-1] donne la même chose
 
 
 def egcd(a,b):
