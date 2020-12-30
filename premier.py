@@ -22,33 +22,26 @@ def creation_nombre_taille(n):
 
 
 def premier(n):
-	a=[n]
-	commande = "openssl prime "
-	r = subprocess.run(commande+str(n),shell=True,stdout=subprocess.PIPE)
-	#resultat_openssl = r.stdout.decode('utf-8') #superflu. A la 2ieme ligne suivante il suffit d'écrire str()
-	print(r.stdout)
-	prime = re.compile(r"(not)")  #Le "not" apparaît lorsque le nombre n'est pas premier
-	resultat = prime.search(str(r.stdout)) #Soit on écrit ça, soit on écrit resultat_openssl=...
-	if resultat:
-		tab = list(str(n)) #On crée un tableau dont les éléments possèdent chacun un caractère de n
-		n = ""
-		if (tab[1] == '0'): #Si à l'étape précédente on avait n=50421 par exemple, alors le prochain nombre sera 042XX, c'est à dire 42XX et ainsi on n'aura un nombre de la taille souhaitée - 1
-			tab[1] = random.choice('123456789') #Cette commande évite ce problème
-		for i in range(0,len(tab)-2):
-			tab[i] = tab[i+1]
-			n += tab[i]
-		tab[-2] = random.choice('0123456789') #Il y a peut-être une meilleure façon de demander les entiers entre 0 et 9
-		n += tab[-2]
-		tab[-1] = random.choice('1379') #on ne choisit que des nombres impairs. Les nombres pairs ne pouvant pas être premier
-		n += tab[-1]
-		n=premier(int(n)) #Récursivité. Evite une boucle
-	else:
-		temp=re.compile(r"\d+")
-		a=temp.findall(str(r.stdout))
-		print(int(a[-1]))
-		print(n)
-		return n #return a[-1] donne la même chose
+	random.seed()
+	impair = random.choice('1379')
+	max = random.choice('123456789')
+	n_i = impair
 
+	for i in range(1,n-1):
+		n_i += random.choice('0123456789')
+	
+	n_i += max
+
+	commande = subprocess.run("openssl prime %d " % int(n_i), shell=True, stdout=subprocess.PIPE)
+	exp_reg = re.compile( r"is not prime")
+
+	resultat=exp_reg.search(str(commande))
+
+	while(resultat):
+		n_i = n_i[1:] + random.choice('0123456789')
+		commande = subprocess.run("openssl prime %d "% int(n_i), shell=True, stdout=subprocess.PIPE)
+		resultat = exp_reg.search(str(commande))
+	return int(n_i)
 
 def egcd(a,b):
 	x,y,u,v = 0,1,1,0
