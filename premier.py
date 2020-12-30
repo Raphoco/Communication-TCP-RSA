@@ -41,7 +41,7 @@ def premier(n):
 		n += tab[-2]
 		tab[-1] = random.choice('1379') #on ne choisit que des nombres impairs. Les nombres pairs ne pouvant pas être premier
 		n += tab[-1]
-		premier(int(n)) #Récursivité. Evite une boucle
+		n=premier(int(n)) #Récursivité. Evite une boucle
 	else:
 		temp=re.compile(r"\d+")
 		a=temp.findall(str(r.stdout))
