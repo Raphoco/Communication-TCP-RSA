@@ -31,16 +31,22 @@ def premier(n):
 		n_i += random.choice('0123456789')
 	
 	n_i += max
+	print("si on ne retourne pas n_i, le nombre est : "+n_i+" qui est parfois pair")
+	n_i = n_i[::-1]#On retourne la liste pour avoir la forme souhaitée
+	print("n_i est : "+n_i)
 
 	commande = subprocess.run("openssl prime %d " % int(n_i), shell=True, stdout=subprocess.PIPE)
 	exp_reg = re.compile( r"is not prime")
-
-	resultat=exp_reg.search(str(commande))
-
+	print(str(commande.stdout))
+	resultat=exp_reg.search(str(commande.stdout))
 	while(resultat):
-		n_i = n_i[1:] + random.choice('0123456789')
+		if(n_i[1] == 0):
+			n_i[1]=random.choice('123456789') #Si à l'étape précédente on avait n=50421 par exemple, alors le prochain nombre sera 042XX, c'est à dire 42XX et ainsi on n'aura un nombre de la taille souhaitée - 1
+		n_i = n_i[1:] + random.choice('1379') #Cette commande évite ce problème
+		print(n_i)
 		commande = subprocess.run("openssl prime %d "% int(n_i), shell=True, stdout=subprocess.PIPE)
-		resultat = exp_reg.search(str(commande))
+		print(str(commande.stdout))
+		resultat = exp_reg.search(str(commande.stdout))
 	return int(n_i)
 
 def egcd(a,b):
