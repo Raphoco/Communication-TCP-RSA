@@ -3,10 +3,8 @@
 from premier import * # ou * pour tout import
 
 n = int(input("Indiquer la taille du nombre n souhaité. \n")) 
-p = creationNombreTaille(n)
-q = creationNombreTaille(n)
-p = premier(p)
-q = premier(q)
+p = premier(creationNombreTaille(n))
+q = premier(creationNombreTaille(n))
 print("Le premier nombre premier est : "+ str(p))
 print("Le second nombre premier est : "+str(q))
 
