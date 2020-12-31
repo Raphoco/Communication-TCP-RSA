@@ -1,7 +1,8 @@
 #!/usr/bin/python3
 
 import socket
-from premier import *
+import premier as function
+
 #from main import *
 
 server_address = socket.gethostbyname("localhost")
@@ -15,30 +16,23 @@ my_socket.listen(socket.SOMAXCONN)
 print("New Connection !\n")
 print("Address , Port : ", tsap_from)
 
-finalStr = ""
+[n_s, d_s] = function.cleServeur()
+
 while 1 :
 	ligne = new_connection.recv(1000)
 	if not ligne:
 		break
-	print(ligne.decode("utf-8"))
-	decipher = dechiffrementRSA(int(ligne.decode("utf-8")), inverseModulo(e, 58*46), 59*47)
-	print(decipher)
-	temp = str(decipher).encode("utf-8")
-	print(temp)
+	key_client = ligne.decode("utf-8").split("|")[0]
+	#print(key_client)
+	#print(ligne.decode("utf-8").split("|")[1])
+	tempHex = bytes(ligne.decode("utf-8").split("|")[1], "utf-8").hex()
+	#print(tempHex)
+	intCipher = int(tempHex, 16)
+	#print(intCipher)
+	cipher = function.chiffrementRSA(intCipher, 65337, int(key_client))
+	print("Chiffré : " + str(cipher))
+	# print("Chiffré : " + str(bytes(str(cipher), "utf-8")))
 
-	final = bytes.fromhex(str(temp.hex())).decode('utf-8')
+	new_connection.sendall(bytes(str(cipher), "utf-8"))
 
-	# REVERSING RSA STUFF HERE
-	#
-	# # # # # # 
-
-	# On recompose le message
-	finalStr += ligne.decode("utf-8")
-
-	if "hello" in finalStr.lower():
-		new_connection.sendall("Server : Hello !".encode("utf-8")) # new_connection est le client !
-	print("Content : " + final)
-
-# On envoie le message à la fin de la reconstruction
-print("Content : " + finalStr) # FIXME: Pourquoi il n'est pas toujours print ?
 new_connection.close()

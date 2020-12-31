@@ -3,10 +3,6 @@
 import random
 import subprocess
 import re
-import sys
-
-e=65537
-
 
 def creationNombreTaille(n):
 	tab_entier = []
@@ -83,10 +79,20 @@ def splitParam(str, size):
 #n1 = creation_nombre_taille(n)
 #premier(n1)
 
+e=65537
+#p = premier(creationNombreTaille(3))
+#q = premier(creationNombreTaille(3))
+
+def cleServeur():
+	p_s = premier(creationNombreTaille(2))
+	q_s = premier(creationNombreTaille(2))
+	d_s = inverseModulo(e, (p_s - 1) * (q_s - 1))
+	return [p_s * q_s, d_s]
+
+def cleClient():
+	p_c = premier(creationNombreTaille(2))
+	q_c = premier(creationNombreTaille(2))
+	d_c = inverseModulo(e, (p_c - 1) * (q_c - 1))
+	return [p_c * q_c, d_c]
 
 
-"""Peut-être faire un fichier avec des fonctions pour générer les nombres qu'on veut 
-(creation_nombre_taille(n), premier(n), ...).
-Ensuite, un fichier avec les fonctions utiles pour RSA, style powmod, etc
-Puis les fichiers serveur et client
-Ensuite on construit et relie bien tout ça"""
