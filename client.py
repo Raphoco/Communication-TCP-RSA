@@ -31,9 +31,10 @@ while 1 :
 		lst = temp.split("|")
 		decipher = ""
 		for element in lst:
-			decipher += str(function.dechiffrementRSA(int(element), int(d_c), int(n_c)))
-			if lst[-1] != element:
-				decipher += "|"
-		lstDecipher = [chr(int(k)) for k in decipher.split("|")]
+			decipher += str(function.dechiffrementRSA(int(element), int(d_c), int(n_c))) + "|"
+		last_char_index = decipher.rfind("|")
+		new_string = decipher[:last_char_index] + decipher[last_char_index+1:]
+		lstDecipher = [chr(int(k)) for k in new_string.split("|")]
+
 		final = ''.join(lstDecipher)
 		print("Après déchiffrement : " + str(final))

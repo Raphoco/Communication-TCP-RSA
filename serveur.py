@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 import socket
 import premier as function
-
+import math as math
 #from main import *
 
 server_address = socket.gethostbyname("localhost")
@@ -25,16 +25,17 @@ while 1 :
 	key_client = ligne.decode("utf-8").split("|")[0]
 	msg = ligne.decode("utf-8").split("|")[1]
 	lst = [str(ord(k)) for k in msg]
-	cipher = ""
-	for element in lst:
-		cipher += str(function.chiffrementRSA(int(element), function.e, int(key_client)))
-		if lst[-1] != element:
-			cipher += "|"
 
-	#cipher = function.chiffrementRSA(intCipher, 65337, int(key_client))
-	#print("Chiffré : " + str(cipher))
-	print("Chiffré : " + cipher)
+	cipher = ""
+
+	for element in lst:
+		cipher += str(function.chiffrementRSA(int(element), function.e, int(key_client))) + "|"
 	
-	new_connection.sendall(bytes(cipher, "utf-8"))
+	last_char_index = cipher.rfind("|")
+	new_string = cipher[:last_char_index] + cipher[last_char_index+1:]
+	print(new_string)
+	print("Chiffré : " + new_string)
+	
+	new_connection.sendall(bytes(new_string, "utf-8"))
 
 new_connection.close()
