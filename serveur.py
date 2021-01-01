@@ -27,7 +27,7 @@ while 1 :
 	lst = [str(ord(k)) for k in msg]
 	cipher = ""
 	for element in lst:
-		cipher += str(function.chiffrementRSA(int(element), 65337, int(key_client)))
+		cipher += str(function.chiffrementRSA(int(element), function.e, int(key_client)))
 		if lst[-1] != element:
 			cipher += "|"
 

@@ -10,7 +10,6 @@ my_socket = socket.socket(socket.AF_INET,socket.SOCK_STREAM,socket.IPPROTO_TCP)
 
 my_socket.connect((server_address,server_port))
 [n_c, d_c] = function.cleClient()
-[n_s, d_s] = function.cleServeur()
 while 1 :
 	toSend = ""
 	string_to_be_sent = input("Waiting for you... Type 'Exit' to leave.\n")
@@ -32,7 +31,8 @@ while 1 :
 		lst = temp.split("|")
 		decipher = ""
 		for element in lst:
-			decipher += str(function.dechiffrementRSA(int(element), int(d_s), int(n_c)))
+			decipher += str(function.powmod(int(element), int(d_c), int(n_c)))
+			#decipher += str(function.dechiffrementRSA(int(element), int(d_c), int(n_c)))
 			if lst[-1] != element:
 				decipher += "|"
 		lstDecipher = [chr(int(k)) for k in decipher.split("|")]
