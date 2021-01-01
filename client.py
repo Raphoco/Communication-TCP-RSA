@@ -31,8 +31,7 @@ while 1 :
 		lst = temp.split("|")
 		decipher = ""
 		for element in lst:
-			decipher += str(function.powmod(int(element), int(d_c), int(n_c)))
-			#decipher += str(function.dechiffrementRSA(int(element), int(d_c), int(n_c)))
+			decipher += str(function.dechiffrementRSA(int(element), int(d_c), int(n_c)))
 			if lst[-1] != element:
 				decipher += "|"
 		lstDecipher = [chr(int(k)) for k in decipher.split("|")]
