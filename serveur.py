@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-
+# -*- coding: utf-8 -*-
 import socket
 import premier as function
 
@@ -19,20 +19,22 @@ print("Address , Port : ", tsap_from)
 [n_s, d_s] = function.cleServeur()
 
 while 1 :
-	ligne = new_connection.recv(1000)
+	ligne = new_connection.recv(1024)
 	if not ligne:
 		break
 	key_client = ligne.decode("utf-8").split("|")[0]
-	#print(key_client)
-	#print(ligne.decode("utf-8").split("|")[1])
-	tempHex = bytes(ligne.decode("utf-8").split("|")[1], "utf-8").hex()
-	#print(tempHex)
-	intCipher = int(tempHex, 16)
-	#print(intCipher)
-	cipher = function.chiffrementRSA(intCipher, 65337, int(key_client))
-	print("Chiffré : " + str(cipher))
-	# print("Chiffré : " + str(bytes(str(cipher), "utf-8")))
+	msg = ligne.decode("utf-8").split("|")[1]
+	lst = [str(ord(k)) for k in msg]
+	cipher = ""
+	for element in lst:
+		cipher += str(function.chiffrementRSA(int(element), 65337, int(key_client)))
+		if lst[-1] != element:
+			cipher += "|"
 
-	new_connection.sendall(bytes(str(cipher), "utf-8"))
+	#cipher = function.chiffrementRSA(intCipher, 65337, int(key_client))
+	#print("Chiffré : " + str(cipher))
+	print("Chiffré : " + cipher)
+	
+	new_connection.sendall(bytes(cipher, "utf-8"))
 
 new_connection.close()
