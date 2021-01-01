@@ -38,3 +38,5 @@ while 1 :
 
 		final = ''.join(lstDecipher)
 		print("Après déchiffrement : " + str(final))
+
+#Pour les smileys, il faut avoir installé fonts-emojione depuis son terminal, par la commande sudo apt install fonts-emojione par exemple
