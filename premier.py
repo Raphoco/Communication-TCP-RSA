@@ -84,18 +84,18 @@ e=65537
 #q = premier(creationNombreTaille(3))
 
 def cleServeur():
-	taille_p = input("Entrez la taille souhaitée pour le nombre premier p : ")
-	taille_q = input("Entrez la taille souhaitée pour le nombre premier q : ")
-	p_s = premier(creationNombreTaille(taille_p))
-	q_s = premier(creationNombreTaille(taille_q))
+	#taille_p = input("Entrez la taille souhaitée pour le nombre premier p : ")
+	#taille_q = input("Entrez la taille souhaitée pour le nombre premier q : ")
+	p_s = premier(creationNombreTaille(15))
+	q_s = premier(creationNombreTaille(15))
 	d_s = inverseModulo(e, (p_s - 1) * (q_s - 1))
 	return [p_s * q_s, d_s]
 
 def cleClient():
-	taille_p = input("Entrez la taille souhaitée pour le nombre premier p : ")
-	taille_q = input("Entrez la taille souhaitée pour le nombre premier q : ")
-	p_c = premier(creationNombreTaille(taille_p))
-	q_c = premier(creationNombreTaille(taille_q))
+	#taille_p = input("Entrez la taille souhaitée pour le nombre premier p : ")
+	#taille_q = input("Entrez la taille souhaitée pour le nombre premier q : ")
+	p_c = premier(creationNombreTaille(15))
+	q_c = premier(creationNombreTaille(15))
 	d_c = inverseModulo(e, (p_c - 1) * (q_c - 1))
 	return [p_c * q_c, d_c]
 
