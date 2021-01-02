@@ -13,6 +13,7 @@
 \usepackage{bbm}
 \usepackage{amsmath,amssymb}
 \usepackage{amsthm}
+\usepackage{listing}
 
 
 \title{Protocole de communication basé TCP sécurisé par RSA}
@@ -52,6 +53,8 @@
 \newtheorem{example}{Exemple}
 \newtheorem*{examples}{Exemples}
 \newtheorem{exo}{Exercice}	
+
+
 
 \begin{document}
 
@@ -122,7 +125,36 @@ Cette fonction a été renommée powmod(x,y,n) dans notre programme.\\
 	 Comme indiqué dans le sujet, cette fonction permet de calculer $x^y$ $mod(n)$ bien plus rapidement qu'avec l'opération d'exponentiation ** de python, suivi de la réduction modulo n du résultat obtenu.\\
 	 Cette fonction sera utilisée pour chiffrer et déchiffrer par RSA. En effet, l'opération de chiffrement (respectivement de déchiffrement) pour RSA est $m^e$ $mod(n)$ (respectivement $c^d$ $mod(n)$ ).\\
 	 Etant sujets à pratiquer RSA avec de grands nombres premiers, l'implémentation de cette fonction est primordiale pour optimiser la vitesse des calculs.
-	 \subsection{La fonction splitParam(str,size)}
+	 \subsection{La fonction chiffrementRSA(plaintext)}
+	 \subsection{La fonction dechiffrementRSA(ciphertext)}
+	
+\vfill \eject
+
+\section{Client et serveur}
+
+
+	\subsection{Le serveur}
+	%Parler de comment on récupère la clé privée du client
+	Le serveur, ouvert dans un terminal, attend la connexion d'un client. Le serveur étant le fichier \textbf{serveur.py} à éxécuter dans le terminal avec la commande \textit{python3 serveur.py}.
+	C'est le serveur qui chiffrera le message que lui aura envoyé le client. Le chiffrement se fera par blocs de $3$ caractères utf-8. Pour commencer le chiffrement, on traduit chaque caractère utf-8 du message reçu en son ordre dans la table utf-8 avec la commande \textit{ord(X)} si X est le caractère dont on souhaite l'ordre. Chaque ordre sera stocké sous forme d'une cellule de liste. Comme on voudra coder par blocs de 3, il faut s'assurer que la liste est de la taille un multiple de 3 (en nombre de cellules). Si la liste n'est pas de taille 3, il suffit d'y ajouter l'ordre d'un élément, qu'on aura au préalable choisi, ici 'Z', jusqu'à ce que la taille de la liste soit un multiple de 3.
+\\
+Maintenant, tous les caractères utf-8 n'ayant pas la même taille en base $10$ (et peu importe la base), nous avons choisi de faire du padding à chaque caractère pour que chacun d'eux soient composés de $6$ chiffres. On concatènera le caractère "4" à gauche de la chaîne de caractères représentant l'entier, jusqu'à ce que cette chaîne soit de taille $6$. %Ci-dessous la partie du code représentant ces étapes :
+Il ne reste plus qu'à concaténer les 3 premiers éléments de la liste ensemble, puis les trois suivants, \textit{et cetera}, et de stocker ces différentes chaînes dans une nouvelle liste. Ensuite, on chiffre les éléments de cette nouvelle liste un par un et on crée une nouvelle chaine de caractère à partir de la concaténation des blocs chiffrés suivi du caractère "|" pour que les blocs soient visibles à l'oeil nu et que ça aère légèrement l'affichage dans le terminal.
+Il ne reste plus qu'à envoyer cette dernière chaîne de caractère au client sous forme de bytes. 
+%\begin{verbatim}
+%msg = ligne.decode("utf-8").split("|")[1]
+%lst = [str(ord(k)) for k in msg]
+%while (len(lst) % 3 != 0):
+%lst.append(str(ord('Z')))
+%for i in range(0,len(lst)):
+%	while (len(lst[i]) < 6): 
+%		lst[i] = "4" + lst[i]
+%\end{verbatim}
+		
+	\subsection{Le client}
+	Le client, ouvert dans un terminal, se connecte au serveur qui est ouvert au préalable et attend une connexion. Le client étant le fichier \textbf{client.py} à éxécuter dans le terminal avec la commande \textit{python3 client.py}. La partie déchiffrement se fait chez le client. Celui-ci intercepte le message chiffré envoyé par le serveur. On crée une liste remplie celulle par cellule des blocs du chiffré, séparés par le caractère "|" grâce à la fonction split. Il suffit alors de déchiffrer les éléments de la liste un par un et d'ajouter chacun des blocs déchiffrés à une liste initialement vide. Il faut ensuite diviser chaque chaine de caractere de la liste en $3$ chaînes de caractères de taille $6$ et de supprimer les caractères "4" que l'on avait concaténé pour obtenir des nombres de taille similaire. On retrouve alors une liste de chaine de caractères correspond aux ordres, en UTF-8, des caractères du message clair. Il suffit donc de les récupérer par la fonction chr() et de les concaténer pour retrouver le message initial, sans oublier d'enlever les caractères 'Z' du padding. (Il est possible de perdre de l'information avec un tel pading en supprimant un 'Z' qui faisait parti du clair, et non du padding.
+	
+	%Il faudra détailler un petit peu plus. Par exemple les problèmes rencontrés et solutions apportées si on en a apportées.
 	
 \vfill \eject
 \section{Jeu d'essais}
