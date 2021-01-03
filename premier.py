@@ -78,12 +78,11 @@ def cleClient():
 
 
 def chiffrementRSA(plaintext, key_client):
-	#[n_c, d_c] = cleClient()
 	lst = [str(ord(k)) for k in plaintext]
 	while (len(lst) % 3 != 0):
 		lst.append(str(ord('ゑ'))) #Easter Egg : le caractère 'ゑ' est la lettre E en japonais, et est celui le moins utilisé afin de minimiser la perte d'information
 	for i in range(0,len(lst)):
-		while (len(lst[i]) < 6): #6 est la taille maximale de l'ordre d'un caractère utf-8 en base 10
+		while (len(lst[i]) < 6): 
 			lst[i] = "4" + lst[i]
 	cipher = ""
 	lst2 = []
@@ -108,7 +107,7 @@ def dechiffrementRSA(ciphertext, n_c, d_c):
 			decipher.append(new_string[i][j] + new_string[i][j+1] + new_string[i][j+2] + new_string[i][j+3] + new_string[i][j+4] + new_string[i][j+5])
 	for i in range(0,len(decipher)):
 		for j in range(0,len(decipher[i])):
-			while(decipher[i][j] == "4"):
+			while(decipher[i][j] == "4" and len(decipher[i]) > 2): #la deuxième condition est pour que les virgules apparaissent et aucun caractère utf-8 en-dessous de 10 ne nous intéresse vraiment (ce ne sont pas des caractères)
 				decipher[i] = decipher[i][1:]
 			else:
 				break
