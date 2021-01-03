@@ -2,8 +2,7 @@
 
 import socket
 import sys
-import premier as function
-#from serveur import *
+from premier import cleClient, dechiffrementRSA
 
 server_address = socket.gethostbyname("localhost") # IP machine host
 server_port = 8790 # Numéro de port demandé
@@ -11,7 +10,7 @@ server_port = 8790 # Numéro de port demandé
 my_socket = socket.socket(socket.AF_INET,socket.SOCK_STREAM,socket.IPPROTO_TCP)
 
 my_socket.connect((server_address,server_port))
-[n_c, d_c] = function.cleClient()
+[n_c, d_c] = cleClient()
 
 nom_client=input("Entrez votre nom s'il vous plaît. \n")
 if(nom_client == "Oscar"):
@@ -36,37 +35,14 @@ while 1 :
 	temp = dataRcv.decode("utf-8")
 	print("Reçu : " + temp)
 	if dataRcv :
-		chaine = ""
 		lst = temp.split("|")
-		print("lst : "+str(lst))
-		decipher = ""
-		for element in lst:
-			decipher += str(function.dechiffrementRSA(int(element), int(d_c), int(n_c))) + "|"
-		last_char_index = decipher.rfind("|")
-		new_string = decipher[:last_char_index] + decipher[last_char_index+1:]
-		new_string = new_string.split("|")
-		decipher = []
-		for i in range(0,len(new_string)):
-			for j in range(0, len(new_string[i]), 6):
-				decipher.append(new_string[i][j] + new_string[i][j+1] + new_string[i][j+2] + new_string[i][j+3] + new_string[i][j+4] + new_string[i][j+5])
-		for i in range(0,len(decipher)):
-			#temp = new_string[i]
-			for j in range(0,len(decipher[i])):
-				while(decipher[i][j] == "4"):
-					decipher[i] = decipher[i][1:]
-				else:
-					break
-		print(decipher)
-		"""temp=[]
-		for i in range(0,len(new_string),6):
-			temp.append(new_string[i] + new_string[i+1] + new_string[i+2] + new_string[i+3] + new_string[i+4] + new_string[i+5])
-		print(temp)"""
-		lstDecipher = [chr(int(k)) for k in decipher]
-		if(lstDecipher[-1] == "Z"):
-			lstDecipher = lstDecipher[:-1]
-		if(lstDecipher[-1] == "Z"):
-			lstDecipher = lstDecipher[:-1]
-		final = ''.join(lstDecipher)
-		print("Après déchiffrement : " + str(final))
+		plaintext = dechiffrementRSA(lst, n_c, d_c)
+		reponse = "reponse"
+		#while(reponse[0] != "O" or reponse[0] != "o" or reponse[0] != "N" or reponse[0] != "n" ):
+		if(reponse[0] != "O"):
+			reponse = input("Voulez-vous voir le message déchiffré ? Répondre par Oui ou Non. \n")
+
+		if (reponse[0] == "O" or reponse[0] == "o"):
+			print("Après déchiffrement : " + str(plaintext))
 
 #Pour les smileys, il faut avoir installé fonts-emojione depuis son terminal, par la commande sudo apt install fonts-emojione par exemple

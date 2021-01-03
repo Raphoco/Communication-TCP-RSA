@@ -1,10 +1,9 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
+
 import socket
-import premier as function
+from premier import cleServeur, chiffrementRSA
 import math as math
-#from client import *
-#from main import *
 
 server_address = socket.gethostbyname("localhost")
 server_port = 8790
@@ -17,7 +16,7 @@ my_socket.listen(socket.SOMAXCONN)
 print("New Connection !\n")
 print("Address , Port : ", tsap_from)
 
-[n_s, d_s] = function.cleServeur()
+[n_s, d_s] = cleServeur()
 
 """nom_serveur=input("Entrez votre nom s'il vous plaît. \n")
 print("Vous pouvez désormais communiquer avec " + nom_client)"""
@@ -27,31 +26,8 @@ while 1 :
 		break
 	key_client = ligne.decode("utf-8").split("|")[0]
 	msg = ligne.decode("utf-8").split("|")[1]
-	lst = [str(ord(k)) for k in msg]
-	while (len(lst) % 3 != 0):
-		lst.append(str(ord('Z')))
-	for i in range(0,len(lst)):
-		while (len(lst[i]) < 6): #6 est la taille maximale de l'ordre d'un caractère utf-8 en base 10
-			lst[i] = "4" + lst[i]
-	print(lst)
-	cipher = ""
-
-	"""lst2 = ""
-	for i in range(0, len(lst)):
-		lst2 += lst[i]
-	print(lst2)"""
-
-	lst2 = []
-	for i in range (0,len(lst),3):
-		lst2.append(lst[i] + lst[i+1] + lst[i+2])
-	print(lst2)
-
-	for element in lst2:
-		cipher += str(function.chiffrementRSA(int(element), function.e, int(key_client))) + "|"
 	
-	last_char_index = cipher.rfind("|")
-	new_string = cipher[:last_char_index] + cipher[last_char_index+1:]
-	print(new_string)
+	new_string = chiffrementRSA(msg, key_client)
 	print("Chiffré : " + new_string)
 	
 	new_connection.sendall(bytes(new_string, "utf-8"))

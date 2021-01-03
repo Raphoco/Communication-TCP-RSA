@@ -4,6 +4,8 @@ import random
 import subprocess
 import re
 
+e=65537
+
 def creationNombreTaille(n):
 	tab_entier = []
 	random.seed()
@@ -61,27 +63,11 @@ def powmod(x,y,n): #travailler avec des entiers
 		x = (x*x)%n
 	return result
 
-def chiffrementRSA(m,e,n): #Fonction inutile
-	c = powmod(m,e,n)
-	return c
-
-def dechiffrementRSA(c,e,n): #Fonction inutile
-	m = powmod(c,e,n)
-	return m
-
-def splitParam(str, size): 
+"""def splitParam(str, size): 
 	lst = []
 	for i in range(0, len(str), size):
 		lst.append(str[i : i + size])
-	return lst
-
-#n = int(input("Indiquer la taille du nombre n souhaité. \n")) #Bros n'aime pas les input
-#n1 = creation_nombre_taille(n)
-#premier(n1)
-
-e=65537
-#p = premier(creationNombreTaille(3))
-#q = premier(creationNombreTaille(3))
+	return lst"""
 
 def cleServeur():
 	#taille_p = input("Entrez la taille souhaitée pour le nombre premier p : ")
@@ -100,3 +86,45 @@ def cleClient():
 	return [p_c * q_c, d_c]
 
 
+def chiffrementRSA(plaintext, key_client):
+	#[n_c, d_c] = cleClient()
+	lst = [str(ord(k)) for k in plaintext]
+	while (len(lst) % 3 != 0):
+		lst.append(str(ord('Z')))
+	for i in range(0,len(lst)):
+		while (len(lst[i]) < 6): #6 est la taille maximale de l'ordre d'un caractère utf-8 en base 10
+			lst[i] = "4" + lst[i]
+	cipher = ""
+	lst2 = []
+	for i in range (0,len(lst),3):
+		lst2.append(lst[i] + lst[i+1] + lst[i+2])
+	for element in lst2:
+		cipher += str(powmod(int(element), e, int(key_client))) + "|"
+	last_char_index = cipher.rfind("|")
+	new_string = cipher[:last_char_index] + cipher[last_char_index+1:]
+	return new_string
+
+def dechiffrementRSA(ciphertext, n_c, d_c):
+	decipher = ""
+	for element in ciphertext:
+		decipher += str(powmod(int(element), int(d_c), int(n_c))) + "|"
+	last_char_index = decipher.rfind("|")
+	new_string = decipher[:last_char_index] + decipher[last_char_index+1:]
+	new_string = new_string.split("|")
+	decipher = []
+	for i in range(0,len(new_string)):
+		for j in range(0, len(new_string[i]), 6):
+			decipher.append(new_string[i][j] + new_string[i][j+1] + new_string[i][j+2] + new_string[i][j+3] + new_string[i][j+4] + new_string[i][j+5])
+	for i in range(0,len(decipher)):
+		for j in range(0,len(decipher[i])):
+			while(decipher[i][j] == "4"):
+				decipher[i] = decipher[i][1:]
+			else:
+				break
+	lstDecipher = [chr(int(k)) for k in decipher]
+	if(lstDecipher[-1] == "Z"):
+		lstDecipher = lstDecipher[:-1]
+	if(lstDecipher[-1] == "Z"):
+		lstDecipher = lstDecipher[:-1]
+	final = ''.join(lstDecipher)
+	return final
