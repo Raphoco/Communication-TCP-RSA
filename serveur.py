@@ -3,7 +3,6 @@
 
 import socket
 from premier import cleServeur, chiffrementRSA
-import math as math
 
 server_address = socket.gethostbyname("localhost")
 server_port = 8790
@@ -18,16 +17,13 @@ print("Address , Port : ", tsap_from)
 
 [n_s, d_s] = cleServeur()
 
-"""nom_serveur=input("Entrez votre nom s'il vous plaît. \n")
-print("Vous pouvez désormais communiquer avec " + nom_client)"""
 while 1 :
-	ligne = new_connection.recv(1024)
+	string_to_be_sent = input("Ecrire ici : (tapez 'Exit' pour quitter le programme).\n")
+	ligne = new_connection.recv(4096)
 	if not ligne:
 		break
 	key_client = ligne.decode("utf-8").split("|")[0]
-	msg = ligne.decode("utf-8").split("|")[1]
-	
-	new_string = chiffrementRSA(msg, key_client)
+	new_string = chiffrementRSA(string_to_be_sent, key_client)
 	print("Chiffré : " + new_string)
 	
 	new_connection.sendall(bytes(new_string, "utf-8"))

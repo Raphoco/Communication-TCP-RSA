@@ -5,6 +5,7 @@ import subprocess
 import re
 
 e=65537
+KEY_SIZE = 15
 
 def creationNombreTaille(n):
 	tab_entier = []
@@ -54,7 +55,7 @@ def inverseModulo(a,m):
 		return None
 	return x%m
 
-def powmod(x,y,n): #travailler avec des entiers
+def powmod(x,y,n):
 	result = 1
 	while y > 0:
 		if y&1>0:
@@ -63,25 +64,15 @@ def powmod(x,y,n): #travailler avec des entiers
 		x = (x*x)%n
 	return result
 
-"""def splitParam(str, size): 
-	lst = []
-	for i in range(0, len(str), size):
-		lst.append(str[i : i + size])
-	return lst"""
-
 def cleServeur():
-	#taille_p = input("Entrez la taille souhaitée pour le nombre premier p : ")
-	#taille_q = input("Entrez la taille souhaitée pour le nombre premier q : ")
-	p_s = premier(creationNombreTaille(15))
-	q_s = premier(creationNombreTaille(15))
+	p_s = premier(creationNombreTaille(KEY_SIZE))
+	q_s = premier(creationNombreTaille(KEY_SIZE))
 	d_s = inverseModulo(e, (p_s - 1) * (q_s - 1))
 	return [p_s * q_s, d_s]
 
 def cleClient():
-	#taille_p = input("Entrez la taille souhaitée pour le nombre premier p : ")
-	#taille_q = input("Entrez la taille souhaitée pour le nombre premier q : ")
-	p_c = premier(creationNombreTaille(15))
-	q_c = premier(creationNombreTaille(15))
+	p_c = premier(creationNombreTaille(KEY_SIZE))
+	q_c = premier(creationNombreTaille(KEY_SIZE))
 	d_c = inverseModulo(e, (p_c - 1) * (q_c - 1))
 	return [p_c * q_c, d_c]
 
@@ -90,7 +81,7 @@ def chiffrementRSA(plaintext, key_client):
 	#[n_c, d_c] = cleClient()
 	lst = [str(ord(k)) for k in plaintext]
 	while (len(lst) % 3 != 0):
-		lst.append(str(ord('Z')))
+		lst.append(str(ord('ゑ'))) #Easter Egg : le caractère 'ゑ' est la lettre E en japonais, et est celui le moins utilisé afin de minimiser la perte d'information
 	for i in range(0,len(lst)):
 		while (len(lst[i]) < 6): #6 est la taille maximale de l'ordre d'un caractère utf-8 en base 10
 			lst[i] = "4" + lst[i]
@@ -122,9 +113,9 @@ def dechiffrementRSA(ciphertext, n_c, d_c):
 			else:
 				break
 	lstDecipher = [chr(int(k)) for k in decipher]
-	if(lstDecipher[-1] == "Z"):
+	if(lstDecipher[-1] == "ゑ"):
 		lstDecipher = lstDecipher[:-1]
-	if(lstDecipher[-1] == "Z"):
+	if(lstDecipher[-1] == "ゑ"):
 		lstDecipher = lstDecipher[:-1]
 	final = ''.join(lstDecipher)
 	return final
