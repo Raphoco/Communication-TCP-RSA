@@ -2,7 +2,7 @@
 \usepackage[francais]{babel}
 \usepackage{natbib}
 \usepackage{url}
-\usepackage[utf8x]{inputenc}
+%\usepackage[utf8x]{inputenc}
 \usepackage{CJKutf8}
 \usepackage{graphicx}
 \graphicspath{{images/}}
@@ -13,8 +13,35 @@
 \usepackage{bbm}
 \usepackage{amsmath,amssymb}
 \usepackage{amsthm}
-\usepackage{listing}
 
+\usepackage{listings}
+\usepackage{xcolor}
+
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+
+\lstdefinestyle{mystyle}{
+    backgroundcolor=\color{backcolour},   
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{magenta},
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
+    basicstyle=\ttfamily\footnotesize,
+    breakatwhitespace=false,         
+    breaklines=true,                 
+    captionpos=b,                    
+    keepspaces=true,                 
+    numbers=left,                    
+    numbersep=5pt,                  
+    showspaces=false,                
+    showstringspaces=false,
+    showtabs=false,                  
+    tabsize=2
+}
+
+\lstset{style=mystyle}
 
 \title{Protocole de communication basé TCP sécurisé par RSA}
 \author{PIARD A. - JACQUET R.}
@@ -107,11 +134,11 @@ De plus, lors de la modification du nombre, s'il n'est pas premier, il faut chan
 
 %Rajouter des screens, cette fonction est intéressante
 	\subsection{Les fonctions egcd(a, b) et modinv(a, m)}
-	Ces deux fonctions sont liées. La fonction egcd renvoie le pgcd des nombres $a$ et $b$ ainsi que les coefficient de Bézout de $a$ et $b$. Cette fonction correspond donc à l'algorithme d'Euclide étendu.\\
-	Quant à elle, la fonction modinv(a,m), renommée en inverseModulo(a,m) dans notre programme, fait appel à la fonction egcd et renvoie l'inverse modulaire d'un nombre.\\
+	Ces deux fonctions sont liées. La fonction \textsf{egcd} renvoie le pgcd des nombres $a$ et $b$ ainsi que les coefficient de Bézout de $a$ et $b$. Cette fonction correspond donc à l'algorithme d'Euclide étendu.\\
+	Quant à elle, la fonction \textsf{modinv($a$,$m$)}, renommée en \textsf{inverseModulo($a$,$m$)} dans notre programme, fait appel à la fonction \textsf{egcd} et renvoie l'inverse modulaire d'un nombre.\\
 	On utilisera donc ces fonctions pour calculer $d=e^{-1}  (mod(\phi (n)))$ avec $\phi(n) = (p-1) \times (q-1)$ et $n = p \times q$.
-	 \subsection{La fonction lpowmod(x, y, n)}
-Cette fonction a été renommée powmod(x,y,n) dans notre programme.\\
+	 \subsection{La fonction \textsf{lpowmod($x$, $y$, $n$)}}
+Cette fonction a été renommée \textsf{powmod($x$,$y$,$n$)} dans notre programme.\\
 	 Comme indiqué dans le sujet, cette fonction permet de calculer $x^y$ $mod(n)$ bien plus rapidement qu'avec l'opération d'exponentiation ** de python, suivi de la réduction modulo n du résultat obtenu.\\
 	 Cette fonction sera utilisée pour chiffrer et déchiffrer par RSA. En effet, l'opération de chiffrement (respectivement de déchiffrement) pour RSA est $m^e$ $mod(n)$ (respectivement $c^d$ $mod(n)$ ).\\
 	 Etant sujets à pratiquer RSA avec de grands nombres premiers, l'implémentation de cette fonction est primordiale pour optimiser la vitesse des calculs.
@@ -120,9 +147,13 @@ C'est cette fonction qui s'occupera de chiffrer le message \textbf{plaintext} pa
 \begin{CJK}{UTF8}{min}
 Pour chiffrer, on traduit chaque caractère UTF-8 du message reçu en son ordre dans la table UTF-8 avec la commande \textit{ord(X)}, où X est le caractère dont on souhaite l'ordre. Chaque ordre sera stocké sous forme de chaîne de caractère dans une cellule de liste. de plus, comme nous voulons coder par blocs de $3$ caractères, il faut s'assurer que la liste des ordres est bien de taille un multiple de $3$. C'est à dire que son nombre de cellules est un multiple de $3$. Si non, on y ajoute l'ordre d'un élément qu'on aura choisi au préalable, ici 'ゑ', jusqu'à ce que la taille de la liste soit un multiple de $3$.\\
 Maintenant, tous les caractères UTF-8 n'ayant pas la même taille, (peu importe la base choisie), nous avons choisi de faire du padding à chaque ordre de caractère, de manière à ce que chacun d'eux soient composés de $6$ chiffres. On concatènera le caractère '$4$' à gauche de la chaîne de caractères représentant l'entier, jusqu'à ce que cette chaîne soit de taille $6$.\\
-Il ne reste plus qu'à concaténer trois par trois les éléments de la liste et de stocker ces nouvelles chaînes de caractères dans une cellule, chacune, d'une nouvelle liste. Ensuite, on chiffre les éléments de cette nouvelle liste un par un et on crée une dernière chaîne de caractères à partir de la concaténation des blocs chiffrés, suivi du caractère $\mid$, de manière à ce que les blocs soient visibles à l'oeil nu et que ça aère légèrement l'affichage dans le terminal. Le chiffrement s'effectue alors simplement à l'aide la fonction \textit{powmod}(int(element), e, int(keyClient)), où element correspond à un élément de la dernière liste, où $e=65537$ et où keyClient est le $n$ du client ($n=p \times q$). Donc p et q restent secrets.
-\subsection{La fonction dechiffrementRSA(ciphertext, nc , dc )}
-	C'est cette fonction qui s'occupera du déchiffrement d'un message chiffré \textbf{ciphertext} par la méthode RSA présentée précédemment. On crée une liste remplie cellule par cellule des blocs du chiffré, séparés par le caractère $\mid$ grâce à la fonction split. Il suffit alors de déchiffrer les éléments de la liste un par un et d'ajouter chacun des blocs déchiffrés à une liste initialement vide. Pour déchiffrer blocs par blocs (on appellera element chaque bloc du chiffré), il suffit d'appeler la fonction \textit{powmod}(int(element), int(dc), int(nc). Il faut ensuite diviser chaque chaîne de caracteres de la liste en $3$ chaînes de caractères de taille $6$ et de supprimer les caractères '$4$' que l'on avait concaténé pour obtenir des nombres de taille similaire. On retrouve alors une liste de chaine de caractères correspond aux ordres, en UTF-8, des caractères du message clair. Il suffit donc de les récupérer par la fonction \textit{chr()} et de les concaténer pour retrouver le message initial, sans oublier d'enlever les caractères 'ゑ' du padding. Il est quasiment impossible de perdre de l'information ici car ce caractère n'est presque plus utilisé au Japon, voir plus du tout. Se référer au premier paragraphe du site : \url{https://fr.wikipedia.org/wiki/ゑ}.
+Il ne reste plus qu'à concaténer trois par trois les éléments de la liste et de stocker ces nouvelles chaînes de caractères dans une cellule, chacune, d'une nouvelle liste. Ensuite, on chiffre les éléments de cette nouvelle liste un par un et on crée une dernière chaîne de caractères à partir de la concaténation des blocs chiffrés, suivi du caractère $\mid$, de manière à ce que les blocs soient visibles à l'oeil nu et que ça aère légèrement l'affichage dans le terminal. Le chiffrement s'effectue alors simplement à l'aide la fonction \textsf{powmod(int(element), e, int(keyClient))}, où element correspond à un élément de la dernière liste, où $e=65537$ et où keyClient est le $n$ du client ($n=p \cdot q$). Donc $p$ et $q$ restent secrets.
+\subsection{La fonction dechiffrementRSA(ciphertext, nc , dc)}
+	C'est cette fonction qui s'occupera du déchiffrement d'un message chiffré \textbf{ciphertext} par la méthode RSA présentée précédemment. On crée une liste remplie cellule par cellule des blocs du chiffré, séparés par le caractère $\mid$ grâce à la fonction split. Il suffit alors de déchiffrer les éléments de la liste un par un et d'ajouter chacun des blocs déchiffrés à une liste initialement vide. Pour déchiffrer blocs par blocs (on appellera element chaque bloc du chiffré), il suffit d'appeler la fonction \textit{powmod}(int(element), int(dc), int(nc). Il faut ensuite diviser chaque chaîne de caracteres de la liste en $3$ chaînes de caractères de taille $6$ et de supprimer les caractères '$4$' que l'on avait concaténé pour obtenir des nombres de taille similaire. On retrouve alors une liste de chaine de caractères correspond aux ordres, en UTF-8, des caractères du message clair. Il suffit donc de les récupérer par la fonction \textit{chr()} et de les concaténer pour retrouver le message initial, sans oublier d'enlever les caractères 'ゑ' du padding. Il est quasiment impossible de perdre de l'information ici car ce caractère n'est presque plus utilisé au Japon, voir plus du tout. Se référer au premier paragraphe du site : \url{https://fr.wikipedia.org/wiki/}ゑ.\\
+	
+The next code will be directly imported from a file
+
+%\lstinputlisting[language=Python]{client.py}
 \vfill \eject
 \end{CJK}
 \section{Client et serveur}
