@@ -2,7 +2,7 @@
 
 import socket
 import sys
-from premier import cleClient, dechiffrementRSA
+from fonctions import cleClient, dechiffrementRSA
 
 server_address = socket.gethostbyname("localhost")
 server_port = 8790

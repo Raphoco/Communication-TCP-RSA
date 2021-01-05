@@ -3,7 +3,7 @@
 
 import sys
 import socket
-from premier import cleServeur, chiffrementRSA
+from fonctions import cleServeur, chiffrementRSA
 
 server_address = socket.gethostbyname("localhost")
 server_port = 8790
