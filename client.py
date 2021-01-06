@@ -11,7 +11,7 @@ my_socket.connect((server_address,server_port))
 
 [n_c, d_c] = cleClient()
 nom_client = input("Entrez votre nom s'il vous plaît. \n")
-print("Ma clef publique n est : "+str(n_c))
+print("Ma clé publique n est : "+str(n_c))
 if(nom_client == "Oscar"): # Easter Egg lol
 	print("Oscar est supposé écouter le canal, pas participer à la conversation... \n")
 	sys.exit(1)

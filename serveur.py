@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
-
+# Salut, ceci est un test .;. de message .;. envoyé depuis le serveur, .;. en direction du client .;. encodé par RSA. "é_'éç"'àà'(é)😊🥺$38"&*:!wx>w€_' 私はプログラムするのが好きです - Лучший преподаватель Mr. BROS 🥰😂
 import sys
 import socket
 from fonctions import cleServeur, chiffrementRSA
@@ -17,7 +17,7 @@ print("New Connection !\n")
 print("Address , Port : ", tsap_from)
 
 [n_s, d_s] = cleServeur()
-print("clé serveur : "+str(n_s))
+print("Clé serveur : "+str(n_s))
 while 1 :
 	string_to_be_sent = input("Ecrire ici : (tapez 'Exit' pour quitter le programme).\n")
 	if(string_to_be_sent == "Exit"):
@@ -26,7 +26,7 @@ while 1 :
 	if not ligne:
 		break
 	key_client = ligne.decode("utf-8").split("|")[0]
-	print("clé client : "+key_client)
+	print("Clé client : "+key_client)
 	new_string = chiffrementRSA(string_to_be_sent, key_client)
 	print("Chiffré : " + new_string)
 	

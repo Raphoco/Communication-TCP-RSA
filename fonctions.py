@@ -96,23 +96,25 @@ def chiffrementRSA(plaintext, key_client):
 def dechiffrementRSA(ciphertext, n_c, d_c):
 	decipher = ""
 	for element in ciphertext:
-		decipher += str(powmod(int(element), int(d_c), int(n_c))) + "|"
-	new_string = decipher[:-1]
+		decipher += str(powmod(int(element), int(d_c), int(n_c))) + "|" # effectue c^d % n_c pour déchiffrer et concatène en séparant par "|"
+	new_string = decipher[:-1] # on supprime le dernier "|" superflu
 	new_string = new_string.split("|")
 	decipher = []
 	for i in range(0,len(new_string)):
 		for j in range(0, len(new_string[i]), 6):
 			decipher.append(new_string[i][j] + new_string[i][j+1] + new_string[i][j+2] + new_string[i][j+3] + new_string[i][j+4] + new_string[i][j+5])
+			# On créé une nouvelle liste composé des 6 caractères successifs de la liste précédente
 	for i in range(0,len(decipher)):
 		for j in range(0,len(decipher[i])):
-			while(decipher[i][j] == "4" and len(decipher[i]) > 2): #la deuxième condition est pour que les virgules apparaissent et aucun caractère utf-8 en-dessous de 10 ne nous intéresse vraiment (ce ne sont pas des caractères)
+			while(decipher[i][j] == "4" and len(decipher[i]) > 2):  # La deuxième condition sert à ce que les virgules apparaissent. Aucun caractère utf-8 en-dessous de 10 
+																	# ne nous intéresse vraiment (ce ne sont pas des caractères)
 				decipher[i] = decipher[i][1:]
 			else:
 				break
-	lstDecipher = [chr(int(k)) for k in decipher]
+	lstDecipher = [chr(int(k)) for k in decipher] # On créer une liste composée des caractères correspondants aux ordres dans la liste decipher
 	if(lstDecipher[-1] == "ゑ"):
 		lstDecipher = lstDecipher[:-1]
 	if(lstDecipher[-1] == "ゑ"):
-		lstDecipher = lstDecipher[:-1]
-	final = ''.join(lstDecipher)
-	return final
+		lstDecipher = lstDecipher[:-1] # On supprime les caractères liés au padding
+	final = ''.join(lstDecipher) # On cast la liste en chaîne de caractère
+	return final # On retourne le message déchiffré
